@@ -9,19 +9,19 @@ exports.getLogin = (req, res, next) => {
 };
 
 exports.getSignup = (req, res, next) => {
-	res.render('auth/signup', {
-	  path: '/signup',
-	  pageTitle: 'Signup',
-	  isAuthenticated: false
+	res.render("auth/signup", {
+		path: "/signup",
+		pageTitle: "Signup",
+		isAuthenticated: false,
 	});
-  };
+};
 
 exports.postLogin = (req, res, next) => {
 	User.findById("5fae1c0df3c5fe1ac80c4ddb")
 		.then((user) => {
 			req.session.isLoggedIn = true;
-            req.session.user = user;
-            // Normally we do't need to save this, but If we need to garentee that session is save & then page is redirected, we use THIS
+			req.session.user = user;
+			// Normally we do't need to save this, but If we need to garentee that session is save & then page is redirected, we use THIS
 			req.session.save((err) => {
 				console.log(err);
 				res.redirect("/");
@@ -59,10 +59,10 @@ exports.postLogout = (req, res, next) => {
 // exports.postLogin = (req, res, next) => {
 // 	// res.setHeader("Set-Cookie", "isloggedIn=true; ");
 
-// In this case we might end upa scenario when you login , other option which we need to display, is hsown as accordingly. so for this , 
+// In this case we might end upa scenario when you login , other option which we need to display, is hsown as accordingly. so for this ,
 //  first we can save the session. and in that session saved method we can redirect.
 
-// sometimes this may appear because redirect works , here we wirte the session in mongodb, 
+// sometimes this may appear because redirect works , here we wirte the session in mongodb,
 // so this method takes a some milliSeconds or depending on your net speed.
 // Redirect is fired independent from it. so we need to save that session and then redir3ect
 
