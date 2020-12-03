@@ -1,11 +1,15 @@
 const Product = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
+	// for preventing user to navigate pages which he should not visit
+	// if(!req.session.isLoggedIn){
+	// 	return res.redirect('/login')
+	// }
 	res.render("admin/edit-product", {
 		pageTitle: "Add Product",
 		path: "/admin/add-products",
 		editing: false,
-		isAuthenticated:req.session.isLoggedIn
+		isAuthenticated: req.session.isLoggedIn,
 	});
 };
 
@@ -48,7 +52,7 @@ exports.getEditProduct = (req, res, next) => {
 				path: "/admin/edit-product",
 				editing: editMode,
 				product: product,
-				isAuthenticated:req.session.isLoggedIn
+				isAuthenticated: req.session.isLoggedIn,
 			});
 		})
 		.catch((err) => {
@@ -80,14 +84,14 @@ exports.postEditProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
 	Product.find()
 		// .select("title price -_id") to select any particular data, - sign dictates that field should be eliminated
-		// .populate("userId", "name") 
+		// .populate("userId", "name")
 		.then((products) => {
 			console.log(products);
 			res.render("admin/products", {
 				prods: products,
 				pageTitle: "All Products",
 				path: "/admin/products",
-				isAuthenticated:req.session.isLoggedIn
+				isAuthenticated: req.session.isLoggedIn,
 			});
 		})
 		.catch((err) => {
