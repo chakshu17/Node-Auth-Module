@@ -5,6 +5,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoDBStore = require("connect-mongodb-session")(session);
+const csrf =  require('csurf')
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
@@ -21,12 +22,15 @@ const store = new MongoDBStore({
 app.set("view engine", "ejs");
 app.set("views", "views");
 
+const csrfProtection = csrf()
+
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public"))); // for styling , we give path to file for html
+
 app.use(
 	session({
 		secret: "my secret",
@@ -35,6 +39,8 @@ app.use(
 		store: store,
 	})
 ); // session middleware initialized
+
+app.use(csrfProtection)
 
 app.use((req, res, next) => {
 	if (req.session.user) {
