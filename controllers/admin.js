@@ -76,7 +76,8 @@ exports.postEditProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-	Product.find()
+	// to show books which were added by only the current admin in Admin products
+	Product.find({ userId: req.user._id })
 		// .select("title price -_id") to select any particular data, - sign dictates that field should be eliminated
 		// .populate("userId", "name")
 		.then((products) => {
