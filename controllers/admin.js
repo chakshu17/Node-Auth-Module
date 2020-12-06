@@ -79,6 +79,8 @@ exports.postEditProduct = (req, res, next) => {
 		.catch((err) => console.log(err));
 };
 
+
+
 exports.getProducts = (req, res, next) => {
 	// to show books which were added by only the current admin in Admin products
 	Product.find({ userId: req.user._id })
