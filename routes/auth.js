@@ -12,7 +12,7 @@ router.post("/login", authController.postLogin);
 
 router.post("/logout", authController.postLogout);
 
-router.post("/signup", check('email').isEmail() , authController.postSignup);
+router.post("/signup", check('email').isEmail().withMessage('Please Enter a Valid Email') , authController.postSignup);
 
 router.get("/reset", authController.getReset);
 
