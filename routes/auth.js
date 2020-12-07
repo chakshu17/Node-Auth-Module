@@ -28,8 +28,14 @@ router.post(
 			"password",
 			"Please enter a password with number and text only with min of 6 characters "
 		)
-			.isLength({ min: 6 })
+			.isLength({ min: 8 })
 			.isAlphanumeric(),
+		body("confirmPassword").custom((value, { req }) => {
+			if (value !== req.body.password) {
+				throw new Error("Passwords have to matched");
+			}
+			return true;
+		}),
 	],
 	authController.postSignup
 );
