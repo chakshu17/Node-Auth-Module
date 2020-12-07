@@ -48,6 +48,10 @@
   outline-color: #00695c;
 }
 
+.form-control input.invalid{
+    border-color: red;
+}
+
 button{
     font: inherit;
     border: 1px solid black;
@@ -62,3 +66,4 @@ button:active{
     background-color: rgba(58, 207, 221, 0.979);
     color: rgb(8, 8, 8);
 }
+

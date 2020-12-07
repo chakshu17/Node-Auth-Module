@@ -42,6 +42,7 @@ exports.getSignup = (req, res, next) => {
 		pageTitle: "Signup",
 		errorMessage: message,
 		oldInput: { eamil: "", password: "", confirmPassword: "" },
+		validationErrors: [],
 	});
 };
 
@@ -102,6 +103,7 @@ exports.postSignup = (req, res, next) => {
 				password: password,
 				confirmPassword: req.body.confirmPassword,
 			},
+			validationErrors: errors.array(),
 		});
 	}
 	bcrpyt
