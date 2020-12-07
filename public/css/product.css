@@ -1,69 +1,69 @@
-.product-form{
-    width: 20rem;
-    max-width: 90% ;
-    margin: auto;
-    display: block;
+.product-form {
+	width: 20rem;
+	max-width: 90%;
+	margin: auto;
+	display: block;
 }
 
 .product-item {
-    width: 20rem;
-    max-width: 95%;
-    margin: 1rem;
+	width: 20rem;
+	max-width: 95%;
+	margin: 1rem;
 }
 
 .product__title {
-    font-size: 1.2rem;
-    text-align: center;
+	font-size: 1.2rem;
+	text-align: center;
 }
 
 .product__price {
-    text-align: center;
-    color: #4d4d4d;
-    margin-bottom: 0.5rem;
+	text-align: center;
+	color: #4d4d4d;
+	margin-bottom: 0.5rem;
 }
 
 .product__description {
-    text-align: center;
+	text-align: center;
 }
 
-.form-control{
-    margin: 1rem 0;
+.form-control {
+	margin: 1rem 0;
 }
 .form-control label,
 .form-control input,
-.form-control textarea{
-    display: block;
-    width: 100%;
-    margin-bottom: 0.25rem;
+.form-control textarea {
+	display: block;
+	width: 100%;
+	margin-bottom: 0.25rem;
 }
 .form-control input,
 .form-control textarea {
-    border: 1px solid black;
-    font: inherit;
-    border-radius: 2px;
+	border: 1px solid black;
+	font: inherit;
+	border-radius: 2px;
 }
 
 .form-control input:focus,
 .form-control textarea:focus {
-  outline-color: #00695c;
+	outline-color: #00695c;
 }
 
-.form-control input.invalid{
-    border-color: red;
+.form-control input.invalid,
+.form-control input.textarea {
+	border-color: red;
 }
 
-button{
-    font: inherit;
-    border: 1px solid black;
-    background: white;
-    color: black;
-    border-radius: 3px;
-    cursor: pointer;
+button {
+	font: inherit;
+	border: 1px solid black;
+	background: white;
+	color: black;
+	border-radius: 3px;
+	cursor: pointer;
 }
 
 button:hover,
-button:active{
-    background-color: rgba(58, 207, 221, 0.979);
-    color: rgb(8, 8, 8);
+button:active {
+	background-color: rgba(58, 207, 221, 0.979);
+	color: rgb(8, 8, 8);
 }
-
