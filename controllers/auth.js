@@ -27,6 +27,8 @@ exports.getLogin = (req, res, next) => {
 		path: "/login",
 		pageTitle: "Login",
 		errorMessage: message,
+		oldInput: { email: "", password: "" },
+		validationErrors: [],
 	});
 };
 
@@ -56,14 +58,21 @@ exports.postLogin = (req, res, next) => {
 			path: "/login",
 			pageTitle: "Login",
 			errorMessage: errors.array()[0].msg,
+			oldInput: { email: email, password: password },
+			validationErrors: errors.array(),
 		});
 	}
 
 	User.findOne({ email: email })
 		.then((user) => {
 			if (!user) {
-				req.flash("error", "Invalid Email or Passowrd");
-				return res.redirect("/login");
+				return res.status(422).render("auth/login", {
+					path: "/login",
+					pageTitle: "Login",
+					errorMessage: 'Invalid Email or Passwowrd',
+					oldInput: { eamil: email, password: password },
+					validationErrors: [],
+				});
 			}
 			bcrpyt
 				.compare(password, user.password)
@@ -76,8 +85,13 @@ exports.postLogin = (req, res, next) => {
 							res.redirect("/");
 						});
 					}
-					req.flash("error", "Invalid Email or Passowrd");
-					res.redirect("/login");
+					return res.status(422).render("auth/login", {
+						path: "/login",
+						pageTitle: "Login",
+						errorMessage: "Invalid Email or Password",
+						oldInput: { eamil: email, password: password },
+						validationErrors: [],
+					});
 				})
 				.catch((err) => {
 					console.log(err);

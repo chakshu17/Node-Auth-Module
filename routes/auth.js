@@ -18,6 +18,7 @@ router.post(
 		body("password", "Password has to be valid.")
 			.isLength({ min: 5 })
 			.isAlphanumeric(),
+		
 	],
 	authController.postLogin
 );
