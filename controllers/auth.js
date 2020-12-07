@@ -78,7 +78,7 @@ exports.postLogin = (req, res, next) => {
 exports.postSignup = (req, res, next) => {
 	const email = req.body.email;
 	const password = req.body.password;
-	const confirmPassword = req.body.confirmPassword;
+	// const confirmPassword = req.body.confirmPassword;
 	const errors = validationResult(req);
 	if (!errors.isEmpty()) {
 		console.log(errors.array());
@@ -89,34 +89,30 @@ exports.postSignup = (req, res, next) => {
 		});
 	}
 
-	User.findOne({ email: email })
-		.then((userDoc) => {
-			if (userDoc) {
-				req.flash("error", "Email already Exist.");
-				return res.redirect("/signup");
-			}
-			return bcrpyt
-				.hash(password, 12)
-				.then((hashedPassword) => {
-					const user = new User({
-						email: email,
-						password: hashedPassword,
-						cart: { items: [] },
-					});
-					return user.save();
-				})
-				.then((result) => {
-					res.redirect("/login");
-					return transporter.sendMail({
-						to: email,
-						from: "thomasshelby1709@gmail.com",
-						subject: "SignUp Succeded",
-						html: "<h1> You succesfully Signed Up!! </h1>",
-					});
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+	// User.findOne({ email: email })
+	// 	.then((userDoc) => {
+	// 		if (userDoc) {
+	// 			req.flash("error", "Email already Exist.");
+	// 			return res.redirect("/signup");
+	// 		}
+	bcrpyt
+		.hash(password, 12)
+		.then((hashedPassword) => {
+			const user = new User({
+				email: email,
+				password: hashedPassword,
+				cart: { items: [] },
+			});
+			return user.save();
+		})
+		.then((result) => {
+			res.redirect("/login");
+			return transporter.sendMail({
+				to: email,
+				from: "thomasshelby1709@gmail.com",
+				subject: "SignUp Succeded",
+				html: "<h1> You succesfully Signed Up!! </h1>",
+			});
 		})
 		.catch((err) => {
 			console.log(err);

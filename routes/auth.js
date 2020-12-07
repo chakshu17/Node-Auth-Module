@@ -2,6 +2,7 @@ const express = require("express");
 const { check, body } = require("express-validator/check");
 
 const authController = require("../controllers/auth");
+const User = require("../models/user");
 const router = express.Router();
 
 router.get("/login", authController.getLogin);
@@ -19,10 +20,17 @@ router.post(
 			.isEmail()
 			.withMessage("Please Enter a Valid Email")
 			.custom((value, { req }) => {
-				if (value === "test@test.com") {
-					throw new Error("This email address is Forbidden");
-				}
-				return true;
+				// if (value === "test@test.com") {
+				// 	throw new Error("This email address is Forbidden");
+				// }
+				// return true;
+				// validation  done at server side, i.e. we need not to add checking login incontroller, but router will first check it in database.
+				// for this node will wait for response from database for urther tasks. THIS IS ASYNC VALIDATION
+				return User.findOne({ email: value }).then((userDoc) => {
+					if (userDoc) {
+						return Promise.reject("Email already Exist.Please choose different one.");
+					}
+				});
 			}),
 		body(
 			"password",
