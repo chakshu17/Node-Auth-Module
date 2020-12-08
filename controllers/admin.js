@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const { validationResult } = require("express-validator");
 const Product = require("../models/product");
 
@@ -8,7 +9,7 @@ exports.getAddProduct = (req, res, next) => {
 		editing: false,
 		hasError: false,
 		errorMessage: null,
-		validationErrors:[]
+		validationErrors: [],
 	});
 };
 
@@ -22,7 +23,7 @@ exports.postAddProducts = (req, res, next) => {
 	if (!errors.isEmpty()) {
 		return res.status(422).render("admin/edit-product", {
 			pageTitle: "Add Product",
-			path: "/admin/edit-product",
+			path: "/admin/add-product",
 			editing: false,
 			hasError: true,
 			product: {
@@ -32,10 +33,11 @@ exports.postAddProducts = (req, res, next) => {
 				description: description,
 			},
 			errorMessage: errors.array()[0].msg,
-			validationErrors:errors.array()
+			validationErrors: errors.array(),
 		});
 	}
 	const product = new Product({
+		_id: new mongoose.Types.ObjectId("5fcb2811d7576f28285a52e0"),
 		title: title,
 		price: price,
 		description: description,
@@ -49,7 +51,22 @@ exports.postAddProducts = (req, res, next) => {
 			res.redirect("/admin/products");
 		})
 		.catch((err) => {
-			console.log(err);
+			// if you want to show user that something went wrong.
+			// return res.status(500).render("admin/edit-product", {
+			// 	pageTitle: "Add Product",
+			// 	path: "/admin/add-product",
+			// 	editing: false,
+			// 	hasError: true,
+			// 	product: {
+			// 		title: title,
+			// 		imageUrl: imageUrl,
+			// 		price: price,
+			// 		description: description,
+			// 	},
+			// 	errorMessage: "Database Operation failed, Please try again",
+			// 	validationErrors: [],
+			// });
+			res.redirect("/500");
 		});
 };
 
@@ -71,7 +88,7 @@ exports.getEditProduct = (req, res, next) => {
 				product: product,
 				hasError: false,
 				errorMessage: null,
-				validationErrors:[]
+				validationErrors: [],
 			});
 		})
 		.catch((err) => {
@@ -99,10 +116,10 @@ exports.postEditProduct = (req, res, next) => {
 				imageUrl: updatedImageUrl,
 				price: updatedPrice,
 				description: updatedDesc,
-				_id:prodId
+				_id: prodId,
 			},
 			errorMessage: errors.array()[0].msg,
-			validationErrors:errors.array()
+			validationErrors: errors.array(),
 		});
 	}
 

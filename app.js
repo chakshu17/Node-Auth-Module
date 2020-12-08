@@ -11,8 +11,6 @@ const flash = require("connect-flash");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-
-
 const MONGODB_URI =
 	"mongodb+srv://chakshu:chakshu@cluster0.fjlpu.mongodb.net/shop";
 
@@ -51,10 +49,15 @@ app.use((req, res, next) => {
 	if (req.session.user) {
 		User.findById(req.session.user)
 			.then((user) => {
+				if (!user) {
+					next();
+				}
 				req.user = user;
 				next();
 			})
-			.catch((err) => console.log(err));
+			.catch((err) => {
+				throw new Error(err);
+			});
 	} else {
 		next();
 	}
@@ -69,6 +72,8 @@ app.use((req, res, next) => {
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 app.use(authRoutes);
+
+app.get("/500", errorController.get500);
 
 app.use(errorController.get404);
 
