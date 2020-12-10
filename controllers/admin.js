@@ -15,7 +15,7 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProducts = (req, res, next) => {
 	const title = req.body.title;
-	const imageUrl = req.file;
+	const image = req.file;
 	const price = req.body.price;
 	const description = req.body.description;
 	const errors = validationResult(req);
@@ -33,10 +33,13 @@ exports.postAddProducts = (req, res, next) => {
 				price: price,
 				description: description,
 			},
-			errorMessage: 'Attached file is not an Image',
+			errorMessage: "Attached file is not an Image",
 			validationErrors: [],
 		});
 	}
+
+	const imageUrl = image.path;
+
 	const product = new Product({
 		title: title,
 		price: price,

@@ -32,6 +32,7 @@ const fileStorage = multer.diskStorage({
 	filename: (req, file, cb) => {
 		cb(null, new Date().toString() + "-" + file.originalname);
 	},
+	
 });
 const fileFilter = (req, file, cb) => {
 	if (
