@@ -27,6 +27,7 @@ router.post(
 // edit products:
 router.get("/edit-product/:productId", isAuth, adminController.getEditProduct);
 
+// post edit Product
 router.post(
 	"/edit-product",
 	[
