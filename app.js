@@ -12,8 +12,7 @@ const multer = require("multer");
 const errorController = require("./controllers/error");
 const User = require("./models/user");
 
-const MONGODB_URI =
-	"mongodb+srv://chakshu:chakshu@cluster0.fjlpu.mongodb.net/shop";
+const MONGODB_URI = "mongodb+srv://chakshu:chakshu@cluster0.fjlpu.mongodb.net/shop";
 
 const app = express();
 const store = new MongoDBStore({
@@ -21,18 +20,16 @@ const store = new MongoDBStore({
 	collection: "sessions",
 });
 
-app.set("view engine", "ejs");
-app.set("views", "views");
-
 const csrfProtection = csrf();
+
 const fileStorage = multer.diskStorage({
 	destination: (req, file, cb) => {
 		cb(null, "images");
 	},
 	filename: (req, file, cb) => {
-		cb(null, new Date().toString() + "-" + file.originalname);
+		// replace(/:/g, '-') is used for Windows, to replace : <= (this),
+		cb(null, new Date().toISOString().replace(/:/g, '-') + "-" + file.originalname);
 	},
-	
 });
 const fileFilter = (req, file, cb) => {
 	if (
@@ -46,6 +43,8 @@ const fileFilter = (req, file, cb) => {
 	}
 };
 
+app.set("view engine", "ejs");
+app.set("views", "views");
 
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
@@ -53,10 +52,9 @@ const authRoutes = require("./routes/auth");
 
 app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(multer({ dest: "images" }).single("image"));
-app.use(
-	multer({ storage: fileStorage, fileFilter: fileFilter }).single("image")
-);
+app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"));
 app.use(express.static(path.join(__dirname, "public"))); // for styling , we give path to file for html
+app.use('/images',express.static(path.join(__dirname, "public"))); 
 
 app.use(
 	session({
@@ -79,10 +77,10 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
 	if (req.session.user) {
-		User.findById(req.session.user)
+		User.findById(req.session.user._id)
 			.then((user) => {
 				if (!user) {
-					next();
+					return next();
 				}
 				req.user = user;
 				next();
@@ -106,7 +104,7 @@ app.use(errorController.get404);
 app.use((error, req, res, next) => {
 	res.status(500).render("500", {
 		pageTitle: "Error!",
-		path: "/404",
+		path: "/500",
 		isAuthenticated: req.session.isLoggedIn,
 	});
 });
