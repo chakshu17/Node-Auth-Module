@@ -28,7 +28,7 @@ const fileStorage = multer.diskStorage({
 	},
 	filename: (req, file, cb) => {
 		// replace(/:/g, '-') is used for Windows, to replace : <= (this),
-		cb(null, new Date().toISOString().replace(/:/g, '-') + "-" + file.originalname);
+		cb(null, new Date().toISOString().replace(/:/g, "-") + "-" + file.originalname);
 	},
 });
 const fileFilter = (req, file, cb) => {
@@ -54,7 +54,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 // app.use(multer({ dest: "images" }).single("image"));
 app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single("image"));
 app.use(express.static(path.join(__dirname, "public"))); // for styling , we give path to file for html
-app.use('/images',express.static(path.join(__dirname, "public"))); 
+
+app.use("/images", express.static(path.join(__dirname, "images"))); //  for statically serve images on screen
 
 app.use(
 	session({
