@@ -47,9 +47,9 @@ exports.getProduct = (req, res, next) => {
 exports.getIndex = (req, res, next) => {
 	const page = req.query.page;
 
-	Product.find()
-		.skip((page - 1) * ITEMS_PER_PAGE)
-		.limit(ITEMS_PER_PAGE)
+	Product.find() // gives all items
+		.skip((page - 1) * ITEMS_PER_PAGE) // to skip first x amts of results,
+		.limit(ITEMS_PER_PAGE) // to limit the amt of data we fetch to no. we specify here
 		.then((products) => {
 			res.render("shop/index", {
 				prods: products,
