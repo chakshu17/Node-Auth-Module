@@ -1,10 +1,12 @@
 const fs = require("fs");
 const path = require("path");
+const stripe = require('stripe')('sk_test_51Ico06SHKWG7HtNPmCEnL5rX0gkjDbUUIxD7vnd85jPZ46kcG5d58Rsx9OtlwFYkxBPyFBAi990UqJVRQzSWYonI00Kf3XQisr');
 
 const Product = require("../models/product");
 const Order = require("../models/order");
 
 const PDFDocument = require("pdfkit");
+const product = require("../models/product");
 
 const ITEMS_PER_PAGE = 2;
 
@@ -141,6 +143,85 @@ exports.postCartDeleteProduct = (req, res, next) => {
 		});
 };
 
+
+exports.getCheckOut = (req, res, next) => {
+	let products;
+	let total = 0;
+	req.user
+		.populate("cart.items.productId")
+		.execPopulate()
+		.then((user) => {
+			products = user.cart.items;
+			total = 0
+			products.forEach(p => {
+				total += p.quantity * p.productId.price
+			})
+
+			return stripe.checkout.sessions.create({
+				payment_method_types: ['card'],
+				line_items: products.map(p => {
+					return {
+						name: p.productId.title,
+						description: p.productId.description,
+						amount: p.productId.price * 100,
+						currency: 'usd',
+						quantity: p.quantity
+					}
+				}),
+				success_url: req.protocol + '://' + req.get('host') + '/checkout/success',
+				cancel_url: req.protocol + '://' + req.get('host') + '/checkout/cancel',
+			})
+
+		})
+		.then(session => {
+			res.render("shop/checkout", {
+				pageTitle: "Checkout",
+				path: "/checkout",
+				products: products,
+				totalSum: total,
+				sessionId: session.id
+			});
+		})
+		.catch((err) => {
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
+		});
+};
+
+exports.getCheckOutSucess = (req, res, next) => {
+	req.user
+		.populate("cart.items.productId")
+		.execPopulate()
+		.then((user) => {
+			const products = user.cart.items.map((i) => {
+				return {
+					quantity: i.quantity,
+					product: { ...i.productId._doc },
+				};
+			});
+			const order = new Order({
+				user: {
+					email: req.user.email,
+					userId: req.user,
+				},
+				products: products,
+			});
+			return order.save();
+		})
+		.then((result) => {
+			req.user.clearCart();
+		})
+		.then(() => {
+			res.redirect("/orders");
+		})
+		.catch((err) => {
+			const error = new Error(err);
+			error.httpStatusCode = 500;
+			return next(error);
+		});
+};
+
 exports.postOrder = (req, res, next) => {
 	req.user
 		.populate("cart.items.productId")
@@ -228,11 +309,11 @@ exports.getInvoice = (req, res, next) => {
 				totalPrice += prod.quantity * prod.product.price;
 				pdfDoc.fontSize(14).text(
 					prod.product.title +
-						" -- " +
-						prod.quantity +
-						" x " +
-						" $" +
-						prod.product.price
+					" -- " +
+					prod.quantity +
+					" x " +
+					" $" +
+					prod.product.price
 				);
 			});
 
